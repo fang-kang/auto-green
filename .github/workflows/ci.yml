@@ -20,6 +20,7 @@ jobs:
           git config --local user.name "fang-kang"
           git pull --rebase
           date +"%Y-%m-%d %H:%M:%S.%N" > keepchange.txt
+          git update-index --chmod=+x build.cmd
           git add .
           git commit -m "chore: update"
           git push -f https://github.com/fang-kang/auto-green/ master
