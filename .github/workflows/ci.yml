@@ -22,5 +22,5 @@ jobs:
           git pull --rebase
           date +"%Y-%m-%d %H:%M:%S.%N" > keepchange.txt
           git add .
-          git commit -am "a commit a day keeps your girlfriend away"
+          git commit -m "chore: update"
           git push
