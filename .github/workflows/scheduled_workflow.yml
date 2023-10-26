@@ -1,0 +1,21 @@
+  name: Scheduled Workflow
+
+on:
+  push:
+    branches:
+      - master
+  schedule:
+    - cron: '0 0 * * *'  # 每天 UTC 时间 0 点执行，可以根据需求调整时间
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v2
+
+      - name: Run script
+        run: |
+          # 这里写你的脚本或命令，例如使用 Python 脚本来进行提交
+          python commit_script.py
