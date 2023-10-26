@@ -5,7 +5,7 @@ on:
     branches:
       - master
   schedule:
-    - cron: '${{ github.event.repository.id % 60 }} ${{ github.event.repository.id % 24 }} * * *'
+    - cron: "*/360 * * * *"
 
 jobs:
   autogreen:
