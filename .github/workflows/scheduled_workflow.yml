@@ -1,21 +1,24 @@
-  name: Scheduled Workflow
+name: Auto Commit
 
 on:
-  push:
-    branches:
-      - master
   schedule:
-    - cron: '0 0 * * *'  # 每天 UTC 时间 0 点执行，可以根据需求调整时间
+    - cron: "0 0 * * *"
 
 jobs:
-  build:
+  commit:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Check out code
+      - name: Checkout repository
         uses: actions/checkout@v2
 
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: "3.x"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
       - name: Run script
-        run: |
-          # 这里写你的脚本或命令，例如使用 Python 脚本来进行提交
-          python commit_script.py
+        run: python commit_script.py
