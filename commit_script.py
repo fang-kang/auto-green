@@ -1,23 +1,62 @@
+import subprocess
 import datetime
-import os
-import random
+import requests
 
-# 生成一个包含当前日期的文件
-current_date = datetime.datetime.now().date().isoformat()
-file_name = f"{current_date}.txt"
-file_path = os.path.join(os.getcwd(), file_name)
+# 设置 Git 用户信息
+subprocess.call(['git', 'config', '--global', 'user.email', '1793980864@qq.com'])
+subprocess.call(['git', 'config', '--global', 'user.name', 'fang-kang'])
 
-# 根据条件来决定生成深绿或浅绿的提交
-if datetime.datetime.now().weekday() < 5:  # 星期一到星期五
-    with open(file_path, "w") as file:
-        file.write("This is a deep green commit!")
-else:
-    if random.random() < 0.5:
-        with open(file_path, "w") as file:
-            file.write("This is a light green commit!")
+# 生成日期列表
+start_date = datetime.date(2022, 1, 1)
+end_date = datetime.date(2122, 12, 31)
+date_diff = end_date - start_date
+dates = [start_date + datetime.timedelta(days=i) for i in range(date_diff.days + 1)]
 
-# 只有当文件不为空时才添加、提交和推送文件
-if os.path.exists(file_path) and os.path.getsize(file_path) > 0:
-    os.system(f"git add {file_path}")
-    os.system(f"git commit -m 'Add commit for {file_name}'")
-    os.system("git push")
+# 循环提交代码
+for date in dates:
+    # 跳过周末和不需要提交的日期
+    if date.weekday() >= 5 or date in [datetime.date(2022, 1, 1), datetime.date(2122, 12, 25)]:
+        continue
+
+    # 创建一个空白文件
+    with open('contribution.txt', 'w') as f:
+        f.write(f'Contribution on {date.strftime("%Y-%m-%d")}')
+
+    # 添加并提交文件
+    subprocess.call(['git', 'add', 'contribution.txt'])
+    subprocess.call(['git', 'commit', '-m', 'Contribution'])
+    subprocess.call(['git', 'push'])
+
+    # 获取提交的日期
+    commit_date = date.strftime("%Y-%m-%d")
+
+    # 使用 GitHub API 更新提交日期
+    username = 'fang-kang'
+    repository = 'auto-green'
+    url = f'https://api.github.com/repos/{username}/{repository}/commits'
+
+    headers = {
+        'Content-Type': 'application/json',
+        'Accept': 'application/vnd.github.v3+json'
+    }
+
+    payload = {
+        'message': 'Contribution',
+        'author': {
+            'name': 'fang-kang',
+            'email': '1793980864@qq.com',
+            'date': f'{commit_date}T12:00:00Z'
+        }
+    }
+
+    response = requests.post(url, headers=headers, json=payload)
+
+    if response.status_code == 201:
+        print(f'Contribution on {commit_date} created successfully')
+    else:
+        print(f'Failed to create contribution on {commit_date}')
+
+# 删除临时文件
+subprocess.call(['git', 'rm', 'contribution.txt'])
+subprocess.call(['git', 'commit', '-m', 'Remove temporary file'])
+subprocess.call(['git', 'push'])
