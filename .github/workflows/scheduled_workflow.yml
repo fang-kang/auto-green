@@ -23,5 +23,8 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
+      - name: Install requests
+        run: pip install requests
+
       - name: Run script
         run: python commit_script.py
